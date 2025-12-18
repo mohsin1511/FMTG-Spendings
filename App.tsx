@@ -6,6 +6,7 @@ import Dashboard from './components/Dashboard';
 import AIInsights from './components/AIInsights';
 import FinancialSettings from './components/FinancialSettings';
 import Login from './components/Login';
+import ProjectReport from './components/ProjectReport';
 import { Expense, Category, CategoryBudgets } from './types';
 
 const App: React.FC = () => {
@@ -20,6 +21,7 @@ const App: React.FC = () => {
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [budgets, setBudgets] = useState<CategoryBudgets>({});
   const [monthlyIncome, setMonthlyIncome] = useState<number>(0);
+  const [showReport, setShowReport] = useState<boolean>(false);
 
   const [primaryColor, setPrimaryColor] = useState<string>(() => {
     return localStorage.getItem('primaryColor') || '#4f46e5';
@@ -100,10 +102,28 @@ const App: React.FC = () => {
     return <Login onLogin={handleLogin} primaryColor={primaryColor} />;
   }
 
+  // If Report Mode is active, show the project documentation
+  if (showReport) {
+    return (
+      <>
+        <div className="no-print bg-white px-8 py-4 flex justify-between items-center border-b border-slate-200">
+           <h2 className="text-xl font-bold text-slate-800">Project Documentation Viewer</h2>
+           <button 
+             onClick={() => setShowReport(false)}
+             className="px-6 py-2 bg-slate-900 text-white rounded-full font-bold text-sm hover:bg-slate-800"
+           >
+             Return to Dashboard
+           </button>
+        </div>
+        <ProjectReport />
+      </>
+    );
+  }
+
   return (
     <div className="min-h-screen pb-20 theme-transition">
       {/* Refined Premium Header */}
-      <nav className="sticky top-0 z-50 glass-card px-6 md:px-12 py-5 border-b border-white/50 shadow-sm">
+      <nav className="sticky top-0 z-50 glass-card px-6 md:px-12 py-5 border-b border-white/50 shadow-sm no-print">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center space-x-3">
             <div 
@@ -123,12 +143,13 @@ const App: React.FC = () => {
           </div>
           <div className="hidden md:flex items-center space-x-2 bg-slate-100/50 p-1.5 rounded-2xl border border-white/50">
              <button 
-               className="px-5 py-2 text-xs font-bold bg-white rounded-xl shadow-sm border border-slate-100 theme-transition"
+               onClick={() => setShowReport(true)}
+               className="px-5 py-2 text-xs font-bold bg-white rounded-xl shadow-sm border border-slate-100 hover:scale-105 transition-all"
                style={{ color: primaryColor }}
              >
-               Intelligence
+               Generate Document
              </button>
-             <button className="px-5 py-2 text-xs font-bold text-slate-500 hover:text-slate-700 transition-colors">Portfolio</button>
+             <button className="px-5 py-2 text-xs font-bold text-slate-500 hover:text-slate-700 transition-colors">Intelligence</button>
              <div className="w-px h-4 bg-slate-200 mx-2"></div>
              <a 
                href={GITHUB_REPO_URL}
@@ -163,7 +184,7 @@ const App: React.FC = () => {
         </div>
       </nav>
 
-      <main className="max-w-7xl mx-auto px-6 md:px-12 mt-10 space-y-10 animate-fade-in">
+      <main className="max-w-7xl mx-auto px-6 md:px-12 mt-10 space-y-10 animate-fade-in no-print">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
           <div className="lg:col-span-8">
             <Dashboard expenses={expenses} budgets={budgets} income={monthlyIncome} />
@@ -184,18 +205,6 @@ const App: React.FC = () => {
               primaryColor={primaryColor}
               onUpdateColor={setPrimaryColor}
             />
-            <div 
-              className="p-6 rounded-3xl text-white shadow-xl relative overflow-hidden group theme-transition"
-              style={{ backgroundColor: primaryColor }}
-            >
-               <div className="relative z-10">
-                 <h4 className="text-sm font-black uppercase tracking-widest mb-2 opacity-80">FMTG Strategy</h4>
-                 <p className="text-xs font-medium leading-relaxed">
-                   Maintain a <span className="underline decoration-white/30">20% savings rate</span> to reach your FMTG financial goals faster. Use the Pulse dashboard to monitor efficiency.
-                 </p>
-               </div>
-               <div className="absolute -right-4 -bottom-4 w-24 h-24 bg-white/10 rounded-full blur-2xl group-hover:scale-150 transition-transform"></div>
-            </div>
           </div>
           <div className="lg:col-span-8">
             <ExpenseList expenses={expenses} onDeleteExpense={handleDeleteExpense} />
@@ -203,7 +212,7 @@ const App: React.FC = () => {
         </div>
       </main>
 
-      <footer className="max-w-7xl mx-auto px-6 md:px-12 mt-20 text-center py-10 border-t border-slate-200/50">
+      <footer className="max-w-7xl mx-auto px-6 md:px-12 mt-20 text-center py-10 border-t border-slate-200/50 no-print">
         <div className="flex flex-col items-center space-y-4">
           <a 
             href={GITHUB_REPO_URL}
